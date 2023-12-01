@@ -102,3 +102,53 @@ def create_confusion_matrix(dataloader, net, num_classes=9, device="cpu"):
     # Calculate confusion matrix
     cm = confusion_matrix(true_labels, predicted_labels)
     return cm, accuracy_score(true_labels, predicted_labels)
+
+def plot_loss_and_accuracy(trainLossList, trainAccList, valLossList, valAccList):
+    # Create a single subplot with two y-axes
+    fig, ax1 = plt.subplots(figsize=(12, 5))
+
+    # Plot training loss
+    ax1.set_xlabel('Epoch')
+    ax1.set_ylabel('Loss', color='blue')
+    ax1.plot(trainLossList, label='Training Loss', color='blue')
+    ax1.tick_params(axis='y', labelcolor='blue')
+    ax1.legend(loc='upper left')
+
+    # Create a second y-axis for accuracy
+    ax2 = ax1.twinx()
+    ax2.set_ylabel('Accuracy', color='orange')
+    ax2.plot(trainAccList, label='Training Accuracy', color='orange')
+    ax2.tick_params(axis='y', labelcolor='orange')
+    ax2.legend(loc='upper right')
+
+    plt.title('Training Loss and Accuracy')
+    plt.show()
+
+    # Create a single subplot with two y-axes for validation
+    fig, ax3 = plt.subplots(figsize=(12, 5))
+
+    # Plot validation loss
+    ax3.set_xlabel('Epoch')
+    ax3.set_ylabel('Loss', color='blue')
+    ax3.plot(valLossList, label='Validation Loss', color='blue')
+    ax3.tick_params(axis='y', labelcolor='blue')
+    ax3.legend(loc='upper left')
+
+    # Create a second y-axis for accuracy
+    ax4 = ax3.twinx()
+    ax4.set_ylabel('Accuracy', color='orange')
+    ax4.plot(valAccList, label='Validation Accuracy', color='orange')
+    ax4.tick_params(axis='y', labelcolor='orange')
+    ax4.legend(loc='upper right')
+
+    plt.title('Validation Loss and Accuracy')
+    plt.show()
+
+    def transfer_to_cpu(data_list):
+        cpu_data_list = []
+        for data in data_list:
+            if isinstance(data, torch.Tensor):
+                cpu_data_list.append(data.to('cpu'))
+            else:
+                cpu_data_list.append(data)
+        return cpu_data_list
