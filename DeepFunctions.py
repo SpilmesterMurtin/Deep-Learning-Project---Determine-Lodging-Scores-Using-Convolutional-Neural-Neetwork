@@ -3,6 +3,11 @@ import numpy as np
 import itertools
 from sklearn.metrics import confusion_matrix, accuracy_score
 import torch
+from torchvision import transforms
+import os
+import json
+import numpy as np
+
 
 def plot_confusion_matrix(cm, accuracy=0, num_classes=9, normalize=False, title='Confusion matrix', cmap=plt.cm.Blues):
     # Print confusion matrix
@@ -57,7 +62,7 @@ def plot_3_confusion_matrices(cm1, cm2, cm3, accuracy1=0, accuracy2=0, accuracy3
     axes[2].set_xlabel('Predicted label', fontsize=15)
     axes[2].set_ylabel('True label', fontsize=15)
 
-    for ax in axes:
+    for i, ax in enumerate(axes):
         tick_marks = np.arange(len(classes))
         ax.set_xticks(tick_marks)
         ax.set_yticks(tick_marks)
@@ -65,16 +70,16 @@ def plot_3_confusion_matrices(cm1, cm2, cm3, accuracy1=0, accuracy2=0, accuracy3
         ax.set_yticklabels(classes, fontsize=12)
 
         # Use white text if squares are dark; otherwise black
-        threshold = cm1.max() / 2
-        for i, j in itertools.product(range(cm1.shape[0]), range(cm1.shape[1])):
-            color = 'white' if cm1[i, j] > threshold else 'black'
-            ax.text(j, i, cm1[i, j], horizontalalignment='center', color=color, fontsize=12)
+        threshold = [cm1, cm2, cm3][i].max() / 2
+        for j, k in itertools.product(range([cm1, cm2, cm3][i].shape[0]), range([cm1, cm2, cm3][i].shape[1])):
+            color = 'white' if [cm1, cm2, cm3][i][j, k] > threshold else 'black'
+            ax.text(k, j, [cm1, cm2, cm3][i][j, k], horizontalalignment='center', color=color, fontsize=12)
 
     plt.tight_layout()
     plt.show()
 
 # Example usage:
-# plot_confusion_matrices(cm1, cm2, cm3, accuracy1, accuracy2, accuracy3, num_classes, title1, title2, title3)
+# plot_3_confusion_matrices(cm1, cm2, cm3, accuracy1, accuracy2, accuracy3, num_classes, title1, title2, title3)
 
 
 def create_confusion_matrix(dataloader, net, num_classes=9, device="cpu"):
@@ -144,11 +149,89 @@ def plot_loss_and_accuracy(trainLossList, trainAccList, valLossList, valAccList)
     plt.title('Validation Loss and Accuracy')
     plt.show()
 
-    def transfer_to_cpu(data_list):
-        cpu_data_list = []
-        for data in data_list:
-            if isinstance(data, torch.Tensor):
-                cpu_data_list.append(data.to('cpu'))
-            else:
-                cpu_data_list.append(data)
-        return cpu_data_list
+def transfer_to_cpu(data_list):
+    cpu_data_list = []
+    for data in data_list:
+        if isinstance(data, torch.Tensor):
+            cpu_data_list.append(data.to('cpu'))
+        else:
+            cpu_data_list.append(data)
+    return cpu_data_list
+
+#Keep only 500 zeros in the dataset. In attempt to balance the dataset where the zeors are the majority by far.
+def filter_data(dataSet):
+    filtered_data = []
+    count = 0
+    for data in dataSet:
+        if data[1] == 0 and count < 500:
+            filtered_data.append(data)
+            count += 1
+        elif data[1] != 0 and data[1] != 9:
+            filtered_data.append(data)
+    return filtered_data
+
+def list_gpu_names():
+    if torch.cuda.is_available():
+        num_gpus = torch.cuda.device_count()
+        print(f"Number of available GPUs: {num_gpus}")
+
+        for i in range(num_gpus):
+            gpu_name = torch.cuda.get_device_name(i)
+            print(f"GPU {i}: {gpu_name}")
+    else:
+        print("No GPUs available on this machine.")
+        
+def augment_data(dataSet):
+    horizontal_flip = transforms.RandomHorizontalFlip(p=1.0)  # Set probability to 1.0 for always flipping
+    vertical_flip = transforms.RandomVerticalFlip(p=1.0)  # Set probability to 1.0 for always flipping
+    augmented_data = []
+    for data in dataSet:
+        img, label = data
+        augmented_img = horizontal_flip(img)
+        augmented_data.append((augmented_img, label))
+        augmented_img = vertical_flip(img)
+        augmented_data.append((augmented_img, label))
+        augmented_img = vertical_flip(horizontal_flip(img))
+        augmented_data.append((augmented_img, label))
+        augmented_data.append((img, label))
+    return augmented_data
+
+
+def save_results_to_file(layer_sizes, train_cm, train_accuracy, val_cm, val_accuracy, test_cm, test_accuracy):
+    # Create a directory if it doesn't exist
+    results_folder = 'results'
+    os.makedirs(results_folder, exist_ok=True)
+
+    # Convert confusion matrices to lists for JSON serialization
+    train_cm_list = train_cm.tolist() if isinstance(train_cm, np.ndarray) else train_cm
+    val_cm_list = val_cm.tolist() if isinstance(val_cm, np.ndarray) else val_cm
+    test_cm_list = test_cm.tolist() if isinstance(test_cm, np.ndarray) else test_cm
+
+    # Create a dictionary with the results
+    results_dict = {
+        'layer_sizes': layer_sizes,
+        'train': {
+            'confusion_matrix': train_cm_list,
+            'accuracy': train_accuracy
+        },
+        'validation': {
+            'confusion_matrix': val_cm_list,
+            'accuracy': val_accuracy
+        },
+        'test': {
+            'confusion_matrix': test_cm_list,
+            'accuracy': test_accuracy
+        }
+    }
+
+    # Convert the dictionary to JSON format
+    results_json = json.dumps(results_dict, indent=4)
+
+    # Create a filename based on the layer sizes and accuracies
+    filename = '_'.join(map(str, layer_sizes))
+    filename += f'_train_acc_{train_accuracy:.2%}_val_acc_{val_accuracy:.2%}_test_acc_{test_accuracy:.2%}_results.json'
+
+    # Save the results to a file in the 'results' folder
+    filepath = os.path.join(results_folder, filename)
+    with open(filepath, 'w') as file:
+        file.write(results_json)
