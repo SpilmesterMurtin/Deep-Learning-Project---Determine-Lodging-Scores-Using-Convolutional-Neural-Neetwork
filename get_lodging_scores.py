@@ -13,6 +13,8 @@ def get_labels(bin_size):
     return labels
 
 def create_bin(bin_size, vision_score):
+    if (vision_score <= 0):
+        return 0
     bin_num = int(vision_score // bin_size)
     if (vision_score == 99 and bin_size == 33):
         return 2
