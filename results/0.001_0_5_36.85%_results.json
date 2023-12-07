@@ -1,0 +1,23 @@
+{
+    "train": {
+        "loss": [
+            1.9573442793300009
+        ],
+        "accuracy": [
+            0.3034946322441101
+        ]
+    },
+    "validation": {
+        "loss": [
+            1.8218984603881836
+        ],
+        "accuracy": [
+            0.3685483932495117
+        ]
+    },
+    "hyperparams": {
+        "learning_rate": 0.001,
+        "weight_decay": 0,
+        "patience": 5
+    }
+}
