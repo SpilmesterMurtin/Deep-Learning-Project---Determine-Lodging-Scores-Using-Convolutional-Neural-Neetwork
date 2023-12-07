@@ -236,20 +236,36 @@ def save_results_to_file(layer_sizes, train_cm, train_accuracy, val_cm, val_accu
     with open(filepath, 'w') as file:
         file.write(results_json)
 
+        
+def convert_to_json_serializable(obj):
+    if isinstance(obj, torch.Tensor):
+        # Move the tensor to the CPU before converting to NumPy array
+        return obj.detach().numpy().tolist()
+    elif isinstance(obj, (list, np.ndarray)):
+        return [convert_to_json_serializable(item) for item in obj]
+    else:
+        return obj
+
 def save_training_data_to_file(hyperparams, train_loss, train_accuracy, val_loss, val_accuracy):
     # Create a directory if it doesn't exist
     results_folder = 'results'
     os.makedirs(results_folder, exist_ok=True)
-    print(train_loss[0])
+    
+     # Convert the non-serializable objects to serializable format
+    train_loss_serializable = convert_to_json_serializable(train_loss)
+    train_accuracy_serializable = convert_to_json_serializable(train_accuracy)
+    val_loss_serializable = convert_to_json_serializable(val_loss)
+    val_accuracy_serializable = convert_to_json_serializable(val_accuracy)
+
     # Create a dictionary with the results
     results_dict = {
         'train': {
-            'loss': train_loss,
-            'accuracy': train_accuracy
+            'loss': train_loss_serializable,
+            'accuracy': train_accuracy_serializable
         },
         'validation': {
-            'loss': val_loss,
-            'accuracy': val_accuracy
+            'loss': val_loss_serializable,
+            'accuracy': val_accuracy_serializable
         },
         'hyperparams':{
             'learning_rate': hyperparams[0],
@@ -257,12 +273,10 @@ def save_training_data_to_file(hyperparams, train_loss, train_accuracy, val_loss
             'patience': hyperparams[2]
         }
     }
-    print(type(train_accuracy))
-    print(type(hyperparams))
-    print(type(hyperparams[1]))
-    print(type(results_dict))
+
     # Convert the dictionary to JSON format
-    results_json = json.dumps(results_dict, indent=4)
+    results_json = json.dumps(results_dict, default=convert_to_json_serializable, indent=4)
+
 
     # Create a filename based on the layer sizes and accuracies
     filename = '_'.join(map(str, hyperparams))
