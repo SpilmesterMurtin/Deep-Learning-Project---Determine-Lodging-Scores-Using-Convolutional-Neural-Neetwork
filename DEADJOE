@@ -1,0 +1,54 @@
+
+*** These modified files were found in JOE when it aborted on Thu Dec  7 14:19:07 2023
+*** JOE was aborted because the terminal closed
+
+*** File '/home/elon/Deep-Learning-Project---Determine-Lodging-Scores-Using-Convolutional-Neural-Neetwork/.git/COMMIT_EDITMSG'
+Mikkels network
+
+
+
+
+
+
+
+
+
+
+
+
+
+##sldadlæ
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch main
+# Your branch is up to date with 'origin/main'.
+#
+# Changes to be committed:
+#	new file:   MLoadAndMatch.ipynb
+#
+# Changes not staged for commit:
+#	deleted:    LoadAndMatch.ipynb
+#	modified:   cropping/__pycache__/load_read_name_extractor.cpython-39.pyc
+#
+# Untracked files:
+#	.ipynb_checkpoints/
+#	LoadAndMatch-Copy1.ipynb
+#	__pycache__/DeepFunctions.cpython-39.pyc
+#	__pycache__/SVM_classifier_general.cpython-39.pyc
+#	__pycache__/get_lodging_scores.cpython-39.pyc
+#	results/
+#
+
+*** File '(Unnamed)'
+/home/elon/Bachlor_project/.git/MERGE_MSG
+/home/elon/Bachlor_project/.git/MERGE_MSG
+* Build Log *
+* Build Log *
+/home/elon/Deep-Learning-Project---Determine-Lodging-Scores-Using-Convolutional-Neural-Neetwork/.git/COMMIT_EDITMSG
+
+*** File '* Startup Log *'
+Processing '/etc/joe/editorrc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/editorrc
