@@ -270,7 +270,8 @@ def save_training_data_to_file(hyperparams, train_loss, train_accuracy, val_loss
         'hyperparams':{
             'learning_rate': hyperparams[0],
             'weight_decay': hyperparams[1],
-            'patience': hyperparams[2]
+            'patience': hyperparams[2],
+            'message': hyperparams[3]
         }
     }
 
