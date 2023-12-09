@@ -246,6 +246,7 @@ def convert_to_json_serializable(obj):
     else:
         return obj
 
+
 def save_training_data_to_file(hyperparams, train_loss, train_accuracy, val_loss, val_accuracy):
     # Create a directory if it doesn't exist
     results_folder = 'results'
@@ -270,8 +271,12 @@ def save_training_data_to_file(hyperparams, train_loss, train_accuracy, val_loss
         'hyperparams':{
             'learning_rate': hyperparams[0],
             'weight_decay': hyperparams[1],
-            'patience': hyperparams[2]
+            'patience': hyperparams[2],
+            'momentum_bn2': hyperparams[3],
+            'labelsmooth': hyperparams[4],
+            "filename": hyperparams[5]
         }
+
     }
 
     # Convert the dictionary to JSON format
@@ -279,7 +284,7 @@ def save_training_data_to_file(hyperparams, train_loss, train_accuracy, val_loss
 
 
     # Create a filename based on the layer sizes and accuracies
-    filename = '_'.join(map(str, hyperparams))
+    filename = '_'.join(map(str, hyperparams[:-1]))
     filename += f'_{np.max(val_accuracy):.2%}_results.json'
 
     # Save the results to a file in the 'results' folder
