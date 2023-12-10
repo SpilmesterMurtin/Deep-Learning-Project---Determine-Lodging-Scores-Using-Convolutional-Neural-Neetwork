@@ -291,3 +291,11 @@ def save_training_data_to_file(hyperparams, train_loss, train_accuracy, val_loss
     filepath = os.path.join(results_folder, filename)
     with open(filepath, 'w') as file:
         file.write(results_json)
+        
+def distribution(dataloader):
+    dist = [0] * 10
+    for i, data in enumerate(dataloader, 0):
+        # Get the inputs and labels
+        inputs, labels = data
+        for lodg in labels:
+            dist[int(lodg)] += 1

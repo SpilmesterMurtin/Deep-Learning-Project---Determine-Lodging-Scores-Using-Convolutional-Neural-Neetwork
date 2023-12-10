@@ -88,7 +88,6 @@ def create_confusion_matrix(dataloader, net, num_classes=9, device="cpu"):
     # Lists to store true labels and predicted labels
     true_labels = []
     predicted_labels = []
-    totalAcc = 0.0
     for i, data in enumerate(dataloader, 0):
         # Get the inputs and labels
         inputs, labels = data
@@ -99,7 +98,6 @@ def create_confusion_matrix(dataloader, net, num_classes=9, device="cpu"):
         # Move tensors to CPU before extending lists
         true_labels.extend(labels.cpu().numpy())
         predicted_labels.extend(predicted.cpu().numpy())
-        totalAcc += torch.eq(torch.argmax(outputs, dim=1), labels).sum()
 
     # Convert lists to NumPy arrays
     true_labels = np.array(true_labels)
@@ -293,3 +291,11 @@ def save_training_data_to_file(hyperparams, train_loss, train_accuracy, val_loss
     filepath = os.path.join(results_folder, filename)
     with open(filepath, 'w') as file:
         file.write(results_json)
+        
+def distribution(dataloader):
+    dist = [0] * 10
+    for i, data in enumerate(dataloader, 0):
+        # Get the inputs and labels
+        inputs, labels = data
+        for lodg in labels:
+            dist[int(lodg)] += 1
