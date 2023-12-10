@@ -89,7 +89,6 @@ def create_confusion_matrix(dataloader, net, num_classes=9, device="cpu"):
     true_labels = []
     predicted_labels = []
     for i, data in enumerate(dataloader, 0):
-        net.eval()
         # Get the inputs and labels
         inputs, labels = data
         inputs, labels = inputs.to(device), labels.to(device)
@@ -107,6 +106,7 @@ def create_confusion_matrix(dataloader, net, num_classes=9, device="cpu"):
     # Calculate confusion matrix
     cm = confusion_matrix(true_labels, predicted_labels)
     return cm, accuracy_score(true_labels, predicted_labels)
+
 
 def plot_loss_and_accuracy(trainLossList, trainAccList, valLossList, valAccList):
     # Create a single subplot with two y-axes

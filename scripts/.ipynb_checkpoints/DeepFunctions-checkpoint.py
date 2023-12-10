@@ -88,8 +88,8 @@ def create_confusion_matrix(dataloader, net, num_classes=9, device="cpu"):
     # Lists to store true labels and predicted labels
     true_labels = []
     predicted_labels = []
+    totalAcc = 0.0
     for i, data in enumerate(dataloader, 0):
-        net.eval()
         # Get the inputs and labels
         inputs, labels = data
         inputs, labels = inputs.to(device), labels.to(device)
@@ -99,6 +99,7 @@ def create_confusion_matrix(dataloader, net, num_classes=9, device="cpu"):
         # Move tensors to CPU before extending lists
         true_labels.extend(labels.cpu().numpy())
         predicted_labels.extend(predicted.cpu().numpy())
+        totalAcc += torch.eq(torch.argmax(outputs, dim=1), labels).sum()
 
     # Convert lists to NumPy arrays
     true_labels = np.array(true_labels)
@@ -107,6 +108,7 @@ def create_confusion_matrix(dataloader, net, num_classes=9, device="cpu"):
     # Calculate confusion matrix
     cm = confusion_matrix(true_labels, predicted_labels)
     return cm, accuracy_score(true_labels, predicted_labels)
+
 
 def plot_loss_and_accuracy(trainLossList, trainAccList, valLossList, valAccList):
     # Create a single subplot with two y-axes
