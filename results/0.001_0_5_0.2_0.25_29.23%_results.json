@@ -1,0 +1,26 @@
+{
+    "train": {
+        "loss": [
+            2.0061383451152053
+        ],
+        "accuracy": [
+            0.2783602178096771
+        ]
+    },
+    "validation": {
+        "loss": [
+            2.0034361680348716
+        ],
+        "accuracy": [
+            0.29233869910240173
+        ]
+    },
+    "hyperparams": {
+        "learning_rate": 0.001,
+        "weight_decay": 0,
+        "patience": 5,
+        "momentum_bn2": 0.2,
+        "labelsmooth": 0.25,
+        "filename": null
+    }
+}
