@@ -73,7 +73,7 @@ def plot_3_confusion_matrices(cm1, cm2, cm3, accuracy1=0, accuracy2=0, accuracy3
         threshold = [cm1, cm2, cm3][i].max() / 2
         for j, k in itertools.product(range([cm1, cm2, cm3][i].shape[0]), range([cm1, cm2, cm3][i].shape[1])):
             color = 'white' if [cm1, cm2, cm3][i][j, k] > threshold else 'black'
-            ax.text(k, j, [cm1, cm2, cm3][i][j, k], horizontalalignment='center', color=color, fontsize=12)
+            ax.text(k, j, [cm1, cm2, cm3][i][j, k], horizontalalignment='center', color=color, fontsize=16)
 
     plt.tight_layout()
     plt.show()
