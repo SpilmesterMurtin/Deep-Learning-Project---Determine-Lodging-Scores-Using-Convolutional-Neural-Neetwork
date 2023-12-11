@@ -274,7 +274,8 @@ def save_training_data_to_file(hyperparams, train_loss, train_accuracy, val_loss
             'patience': hyperparams[2],
             'momentum_bn2': hyperparams[3],
             'labelsmooth': hyperparams[4],
-            "filename": hyperparams[5]
+            "factor": hyperparams[5],
+            "filename": hyperparams[6]
         }
 
     }

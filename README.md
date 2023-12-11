@@ -3,10 +3,11 @@
 The files needed to train the model is:
 
     LoadImagesAndSave.ipynb
-
+        -preproccesing
     LoadAndMatch.ipynb
-
+        -training
     LoadAndPlotBestModel.ipynb
+        -plotting data
  
 In that order.
 
